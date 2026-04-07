@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 
 namespace Collections
 {
@@ -7,61 +8,100 @@ namespace Collections
         static void Main()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-            MyQueue queue = new MyQueue();
-            queue.Enqueue(4);
-            queue.Enqueue(5);
-            Console.WriteLine(queue.Dequeue());
-            queue.Enqueue(2);
-            Console.WriteLine(queue.Dequeue());
-            Console.WriteLine(queue.Peek());
-            Console.WriteLine(queue.Count);
-            
-            // queue.Enqueue("Ana");
-            // queue.Enqueue("Bacho");
-            // queue.Enqueue("Dato");
-            // queue.Enqueue("დათო");
+            // Stopwatch stopwatch = new Stopwatch();
+            // int count = 999;
+            // stopwatch.Start();
+            // Stack stack = new Stack();
+            // for (int i = 0; i < count; i++)
+            // {
+            //     stack.Push(i);
+            // }
+            // for (int i = 0; i < count; i++)
+            // {
+            //     stack.Pop();
+            // }
+            // stopwatch.Stop();
+            // Console.WriteLine($"Stack time: {stopwatch.ElapsedTicks} ticks");
+            // stopwatch.Restart();
+            // Queue queue = new Queue();
+            // for (int i = 0; i < count; i++)
+            // {
+            //     queue.Enqueue(i);
+            // }
+            // for (int i = 0; i < count; i++)
+            // {
+            //     queue.Dequeue();
+            // }
+            // stopwatch.Stop();
+            // Console.WriteLine($"Queue time: {stopwatch.ElapsedTicks} ticks");
+            // stopwatch.Restart();
+            // MyStack myStack = new MyStack();
+            // for (int i = 0; i < count; i++)
+            // {
+            //     myStack.Push(i);
+            // }
             //
-            // while (queue.Count > 0)
+            // for (int i = 0; i < count; i++)
             // {
-            //     object? item = queue.Dequeue();
-            //     Console.WriteLine(item);
+            //     myStack.Pop();
             // }
-
-            // MyStack stack = new MyStack();
-            // // stack.Push("Ana");
-            // // stack.Push("Bacho");
-            // // stack.Push("Dato");
-            // // stack.Push("დათო");
-            // stack.Push(4);
-            // stack.Push(5);
-            // Console.Write(stack.Count);
-
-            // while (stack.Count > 0)
+            // stopwatch.Stop();
+            // Console.WriteLine($"MyStack time: {stopwatch.ElapsedTicks} ticks");
+            // stopwatch.Restart();
+            // MyQueue myQueue = new MyQueue();
+            // for (int i = 0; i < count; i++)
             // {
-            //     object? item = stack.Peek();
-            //     Console.WriteLine(item);
+            //     myQueue.Enqueue(i);
             // }
+            // for (int i = 0; i < count; i++)
+            // {
+            //     myQueue.Dequeue();
+            // }
+            // stopwatch.Stop();
+            // Console.WriteLine($"MyQueue time: {stopwatch.ElapsedTicks} ticks");
+            // stopwatch.Restart();
+            
+            
+
+            MyStack stack = new MyStack();
+            // stack.Push("Ana");
+            // stack.Push("Bacho");
+            // stack.Push("Dato");
+            // stack.Push("დათო");
+            stack.Push(4);
+            stack.Push(5);
+            Console.Write(stack.Count);
+
+            while (stack.Count > 0)
+            {
+                object? item = stack.Peek();
+                Console.WriteLine(item);
+            }
         }
     }
 
-    class MyStack
+    class MyCollection
     {
-        private object?[] _objects = [];
-        public int Count { get; private set; }
-
+        protected object?[] Objects = new object?[1];
+        protected int ArraySize => Objects.Length;
+        public int Count {get; protected set;}
+    }
+    
+    class MyStack : MyCollection
+    {
         public void Push(object? item)
         {
-            Array.Resize(ref _objects, Count+1);
+            if (ArraySize - 1 == Count)
+            {
+                Array.Resize(ref Objects, ArraySize * 2);
+            }
             Count++;
-            _objects[Count - 1] = item;
+            Objects[ArraySize - Count - 1] = item;
         }
 
         public object? Pop()
         {
-            if (Count == 0) throw new ArgumentException("Stack is empty");
-            object? item = _objects[Count - 1];
-            Array.Resize(ref _objects, Count - 1);
+            object? item = Peek();
             Count--;
             return item;
         }
@@ -69,37 +109,37 @@ namespace Collections
         public object? Peek()
         {
             if (Count == 0) throw new ArgumentException("Stack is empty");
-            return _objects[Count - 1];
+            return Objects[Count - 1];
         }
     }
 
-    class MyQueue
+    class MyQueue : MyCollection
     {
-        private object?[] _objects = [];
-        public int Count { get; private set; }
-
         public void Enqueue(object? item)
         {
-            Array.Resize(ref _objects, Count + 1);
+            if (ArraySize - 1 == Count)
+            {
+                Array.Resize(ref Objects, ArraySize * 2);
+            }
             Count++;
-            _objects[Count - 1] = item;
+            Objects[ArraySize - 1] = item;
         }
 
         public object? Dequeue()
         {
-            if (Count == 0) throw new ArgumentException("Queue is empty");
-            object? item = _objects[0];
-            Array.Reverse(_objects);
-            Array.Resize(ref _objects, Count - 1);
-            Array.Reverse(_objects);
+            object? item = Peek();
             Count--;
+            for (int i = 0; i < Count - 1; i++)
+            {
+                Objects[i] = Objects[i + 1];
+            }
             return item;
         }
 
         public object? Peek()
         {
-            if (Count == 0) throw new ArgumentException("Queue is empty");
-            return _objects[0];
+            if (ArraySize == 0) throw new ArgumentException("Queue is empty");
+            return Objects[0];
         }
     }
 }

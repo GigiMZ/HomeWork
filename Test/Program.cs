@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Authentication;
 
 namespace Test
 {
@@ -6,12 +7,27 @@ namespace Test
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine(Sum(5, 2).GetType());
+            Hunter h1 = new  Hunter("John", "Doe", 1);
         }
-
-        static string Sum(int a, int b)
+    }
+    class Person
+    {
+        public Person(string firstName, string lastName)
         {
-            return (a + b).ToString();
+            FirstName = firstName;
+            LastName = lastName;
         }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+
+    class Hunter : Person
+    {
+        public Hunter(string firstName, string lastName, int gun) : base(firstName, lastName)
+        {
+            Gun = gun;
+        }
+        public int Gun { get; set; }
+        
     }
 }

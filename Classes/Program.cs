@@ -1,137 +1,108 @@
-﻿using System;
-
-namespace Classes
+﻿namespace Classes
 {
-	class Program
-	{
-		static void Main(string[] args)
-		{
-			QuadraticFunction func = new QuadraticFunction();
-			func.A = 1;
-			func.B = 0;
-			func.C = -4;
-			func.CalculateDiscriminant();
-			func.CalculateRoot2();
-			func.CalculateRoot1();
-			Console.WriteLine(func.Root1);
-			Console.WriteLine(func.Discriminant);
-			// Console.WriteLine(func.GetDiscriminant());
-			// func.CalculateRoot1();
-			// func.CalculateRoot2();
-			// Console.WriteLine(func.GetRoot1());
-			// Console.WriteLine(func.GetRoot2());
-			
-		}
-	}
+    internal class Program
+    {
+        static void Main()
+        {
+            Book[] books = new Book[]
+            {
+                new Book { Title = "The Great Gatsby", Author = "F. Scott Fitzgerald", Year = 1925 },
+                new Book { Title = "To Kill a Mockingbird 2", Author = "Harper Lee", Year = 1960 },
+                new Book { Title = "1984", Author = "George Orwell", Year = 1949 },
+                new Book { Title = "Pride and Prejudice", Author = "Jane Austen", Year = 1813 },
+                new Book { Title = "To Kill a Mockingbird", Author = "Harper Lee", Year = 1960 }
+            };
 
-	class QuadraticFunction
-	{
-		private double? _a;
-		private double? _b;
-		private double? _c;
-		private double? _d;
-		private double? _x1;
-		private double? _x2;
+            ArrayHelper.Sort(books);
 
-		public double A
-		{
-			get
-			{
-				if (_a ==  null) throw new Exception("Coefficient isn't initialized.");
-				return _a ?? 0.0;
-			}
-			set
-			{
-				if (value ==  0) throw new ArgumentException("Invalid argument. 'a' can't be 0.");
-				_a = value;
-			}
-		}
-		
-		public double B
-		{
-			get
-			{
-				if (_b ==  null) throw new Exception("Coefficient isn't initialized.");
-				return _b ?? 0.0;
-			}
-			set
-			{
-				_b = value;
-			}
-		}
-		
-		public double C
-		{
-			get
-			{
-				if (_c ==  null) throw new Exception("Coefficient isn't initialized.");
-				return _c ?? 0.0;
-			}
-			set
-			{
-				_c = value;
-			}
-		}
+            for (int i = 0; i < books.Length; i++)
+            {
+                Console.WriteLine(books[i]);
+            }
+        }
+    }
 
-		public double Discriminant
-		{
-			get
-			{
-				if (_d == null) throw new Exception("discriminant isn't initialized.");
-				return _d ?? 0.0;
-			}
-		}
-		
-		public void CalculateDiscriminant()
-		{
-			checked
-			{
-				_d = Math.Pow(B, 2) - (4 * A * C);
-			}
-		}
+    class Book : Sortable
+    {
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public int Year { get; set; }
 
-		public double Root1
-		{
-			get
-			{
-				if (_x1 == null) throw new Exception("root1 isn't initialized or does not exist.");
-				return _x1 ?? 0.0;
-			}
-		}
+        public override string ToString()
+        {
+            return $"Title: {Title}, Author: {Author}, Year: {Year}";
+        }
 
-		public double Root2
-		{
-			get
-			{
-				if (_x2 == null) throw new Exception("root2 isn't initialized or does not exist.");
-				return _x2 ?? 0.0;
-			}
-		}
+        public override object? Compare(object object1)
+        {
+            if (object1 is Book book1)
+            {
+                Book? greaterBook = CompareYear(book1);
+                if (greaterBook == null)
+                {
+                    greaterBook = CompareTitle(book1);
+                }
+                return greaterBook;
+            }
+            return null;
+        }
 
-		public void CalculateRoot1()
-		{
-			if (Discriminant < 0)
-			{
-				_x1 = null;
-				return;
-			}
-			checked
-			{
-				_x1 = (-B + Math.Sqrt(Discriminant)) / (2 * A);
-			}
-		}
+        private Book? CompareYear(Book book1)
+        {
+            if (book1.Year == this.Year) return null;
+            return book1.Year > this.Year ? book1 : this;
+        }
 
-		public void CalculateRoot2()
-		{
-			if (Discriminant < 0)
-			{
-				_x2 = null;
-				return;
-			}
-			checked
-			{
-				_x2 = (-B - Math.Sqrt(Discriminant)) / (2 * A);
-			}
-		}
-	}
+        private Book CompareTitle(Book book1)
+        {
+            return book1.Title.Length > this.Title.Length ? book1 : this;
+        }
+    }
+
+    abstract class Sortable
+    {
+        public abstract object? Compare(object object1);
+    }
+
+    // me ar vici ra tipis obieqts gadmomcemen sortiebistvis. 
+
+    static class ArrayHelper
+    {
+        public static void Sort(object[] array)
+        {
+            if (array is not Sortable[] sortableArray)
+            {
+                return;
+            }
+            for (int i = 0; i < sortableArray.Length - 1; i++)
+            {
+                for (int j = 0; j < sortableArray.Length - i - 1; j++)
+                {
+                    var temp = sortableArray[j].Compare(array[j+1]);
+                    if (temp == null) continue;
+                    if (temp.Equals(sortableArray[j]))
+                    {
+                        sortableArray[j] = sortableArray[j + 1];
+                        sortableArray[j + 1] = (Sortable)temp;
+                    }
+                }
+            }
+        }
+
+        public static void Sort(int[] array)
+        {
+            for (int i = 0; i < array.Length - 1; i++)
+            {
+                for (int j = 0; j < array.Length - i - 1; j++)
+                {
+                    if (array[j] > array[j + 1])
+                    {
+                        var temp = array[j];
+                        array[j] = array[j + 1];
+                        array[j + 1] = temp;
+                    }
+                }
+            }
+        }
+    }
 }
