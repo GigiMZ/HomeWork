@@ -6,10 +6,10 @@ class MyStack : MyCollection
     {
         if (ArraySize - 1 == Count)
         {
-            Array.Resize(ref Objects, ArraySize * 2);
+            Array.Resize(ref Items, ArraySize * 2);
         }
         Count++;
-        Objects[ArraySize - Count - 1] = item;
+        Items[ArraySize - Count - 1] = item;
     }
 
     public object? Pop()
@@ -22,6 +22,6 @@ class MyStack : MyCollection
     public object? Peek()
     {
         if (Count == 0) throw new ArgumentException("Stack is empty");
-        return Objects[Count - 1];
+        return Items[Count - 1];
     }
 }

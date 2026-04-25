@@ -6,10 +6,10 @@ class MyQueue : MyCollection
     {
         if (ArraySize - 1 == Count)
         {
-            Array.Resize(ref Objects, ArraySize * 2);
+            Array.Resize(ref Items, ArraySize * 2);
         }
         Count++;
-        Objects[ArraySize - 1] = item;
+        Items[ArraySize - 1] = item;
     }
 
     public object? Dequeue()
@@ -18,7 +18,7 @@ class MyQueue : MyCollection
         Count--;
         for (int i = 0; i < Count - 1; i++)
         {
-            Objects[i] = Objects[i + 1];
+            Items[i] = Items[i + 1];
         }
         return item;
     }
@@ -26,6 +26,6 @@ class MyQueue : MyCollection
     public object? Peek()
     {
         if (ArraySize == 0) throw new ArgumentException("Queue is empty");
-        return Objects[0];
+        return Items[0];
     }
 }
