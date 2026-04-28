@@ -113,9 +113,9 @@ namespace Collections
             }
         }
 
-        public IEnumerator GetEnumerator()
+        public override IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new  MyListEnumerator(Items, Count);
         }
 
         public object? this[int index]
@@ -164,6 +164,35 @@ namespace Collections
         private void _index_validation(int index)
         {
             if (index < 0 || index >= Count) throw new ArgumentOutOfRangeException(nameof(index));
+        }
+    }
+    
+    class MyListEnumerator : IEnumerator
+    {
+        public object? Current => _items[_index];
+        private readonly object?[] _items;
+        private readonly int _count;
+        private int _index = -1;
+
+        public MyListEnumerator(object?[] items, int count)
+        {
+            _items = items;
+            _count = count;
+        }
+        
+        public bool MoveNext()
+        {
+            if (_index + 1 < _count)
+            {
+                _index++;
+                return true;
+            }
+            return false;
+        }
+
+        public void Reset()
+        {
+            _index = -1;
         }
     }
 }
