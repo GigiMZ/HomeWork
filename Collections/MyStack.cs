@@ -2,9 +2,9 @@
 
 namespace Collections;
 
-class MyStack : MyCollection
+class MyStack<T> : MyCollection<T>
 {
-    public void Push(object? item)
+    public void Push(T? item)
     {
         if (ArraySize == Count)
         {
@@ -14,23 +14,23 @@ class MyStack : MyCollection
         Count++;
     }
 
-    public object? Pop()
+    public T? Pop()
     {
-        object? item = Peek();
+        T? item = Peek();
         Count--;
         return item;
     }
 
-    public object? Peek()
+    public T? Peek()
     {
         if (Count == 0) throw new ArgumentException("Stack is empty");
         return Items[Count - 1];
     }
 
-    public override IEnumerator GetEnumerator()
-    {
-        return new MyStackEnumerator(Items, Count);
-    }
+    // public override IEnumerator GetEnumerator()
+    // {
+    //     return new MyStackEnumerator(Items, Count);
+    // }
 }
 
 class MyStackEnumerator : IEnumerator

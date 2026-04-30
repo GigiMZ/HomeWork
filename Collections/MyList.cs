@@ -2,37 +2,42 @@
 
 namespace Collections
 {
-    class MyList : MyCollection, IList
+    class MyList<T> : MyCollection<T>, IList<T> where T : new()
     {
+        public bool IsSynchronized { get; }
+        public T SyncRoot { get; }
+
+        public bool IsFixedSize { get; }
+        public bool IsReadOnly { get; }
         public MyList()
         {
-            Items = new object?[4];
+            Items = new T?[4];
             Count = 0;
             IsSynchronized = false;
-            SyncRoot = new object();
+            SyncRoot = new T();
             IsFixedSize = false;
             IsReadOnly = false;
         }
         
         public MyList(bool isSynchronized, bool isFixedSize, bool isReadOnly)
         {
-            Items = new object?[4];
+            Items = new T?[4];
             Count = 0; 
             IsSynchronized = isSynchronized;
-            SyncRoot = new object();
+            SyncRoot = new T();
             IsFixedSize = isFixedSize;
             IsReadOnly = isReadOnly;
         }
         
-        public int Add(object? value)
+        public int Add(T? value)
         {
             if (Count >= Items.Length) Resize();
             Items[Count] = value;
             Count++;
-            return Count - 1; // Mas aq ra unda davabruno ar maxsovs
+            return Count - 1;
         }
 
-        public void Insert(int index, object? value)
+        public void Insert(int index, T? value)
         {
             _index_validation(index);
             if (Count + 1 >= ArraySize) Resize();
@@ -44,19 +49,22 @@ namespace Collections
             Count++;
         }
 
-        public void Remove(object? value)
+        public bool Remove(T value)
         {
             int shift = 0;
+            bool removed = false;
             for (int i = 0; i < Count + shift; i++)
             {
-                if (Items[i] == value)
+                if (Items[i].Equals(value))
                 {
                     shift++;
                     Count--;
                     Items[i] = Items[i + shift];
+                    removed = true;
                 }
             }
             if (Count <= ArraySize / 2) Resize(false);
+            return removed;
         }
 
         public void RemoveAt(int index)
@@ -70,55 +78,31 @@ namespace Collections
             Count--;
         }
 
-        public void Clear()
-        {
-            Count = 0;
-            Items = new object?[4];
-        }
-
-        public bool Contains(object? value)
+        public int IndexOf(T? value)
         {
             for (int i = 0; i < Count; i++)
             {
-                if (Items[i] == value) return true;
-            }
-
-            return false;
-        }
-
-        public int IndexOf(object? value)
-        {
-            for (int i = 0; i < Count; i++)
-            {
-                if (Items[i] == value) return i;
+                if (Items[i].Equals(value)) return i;
             }
             return -1;
         }
 
-        public int IndexOf(object? value, int startIndex)
+        public int IndexOf(T? value, int startIndex)
         {
             _index_validation(startIndex);
             for (int i = startIndex; i < Count; i++)
             {
-                if (Items[i] == value) return i;
+                if (Items[i].Equals(value)) return i;
             }
             return -1;
         }
 
-        public void CopyTo(Array array, int index)
-        {
-            for (int i = 0; i < Count; i++)
-            {
-                array.SetValue(Items[i], index + i);
-            }
-        }
+        // public override IEnumerator GetEnumerator()
+        // {
+        //     return new  MyListEnumerator(Items, Count);
+        // }
 
-        public override IEnumerator GetEnumerator()
-        {
-            return new  MyListEnumerator(Items, Count);
-        }
-
-        public object? this[int index]
+        public T? this[int index]
         {
             get
             {
@@ -126,7 +110,6 @@ namespace Collections
                 {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
-
                 return Items[index];
             }
             set
@@ -138,32 +121,6 @@ namespace Collections
 
                 Items[index] = value;
             }
-        }
-
-        public bool IsSynchronized { get; }
-        public object SyncRoot { get; }
-
-        public bool IsFixedSize { get; }
-        public bool IsReadOnly { get; }
-        
-        private void Resize(bool increase = true)
-        {
-            object?[] newItems;
-            if (increase) 
-                newItems = new object?[ArraySize * 2];
-            else 
-                newItems = new object?[(int)MathF.Round(ArraySize / 2)];
-            
-            for (int i = 0; i < Count; i++)
-            {
-                newItems[i] = Items[i];
-            }
-            Items = newItems;
-        }
-
-        private void _index_validation(int index)
-        {
-            if (index < 0 || index >= Count) throw new ArgumentOutOfRangeException(nameof(index));
         }
     }
     

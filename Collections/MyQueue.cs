@@ -2,9 +2,9 @@
 
 namespace Collections;
 
-class MyQueue : MyCollection
+class MyQueue<T> : MyCollection<T>
 {
-    public void Enqueue(object? item)
+    public void Enqueue(T? item)
     {
         if (ArraySize == Count)
         {
@@ -14,9 +14,9 @@ class MyQueue : MyCollection
         Items[Count - 1] = item;
     }
 
-    public object? Dequeue()
+    public T? Dequeue()
     {
-        object? item = Peek();
+        T? item = Peek();
         Count--;
         for (int i = 0; i < Count - 1; i++)
         {
@@ -25,16 +25,16 @@ class MyQueue : MyCollection
         return item;
     }
 
-    public object? Peek()
+    public T? Peek()
     {
         if (ArraySize == 0) throw new ArgumentException("Queue is empty");
         return Items[0];
     }
 
-    public override IEnumerator GetEnumerator()
-    {
-        return new MyQueueEnumerator(Items, Count);
-    }
+    // public override IEnumerator GetEnumerator()
+    // {
+    //     return new MyQueueEnumerator(Items, Count);
+    // }
 }
 
 class MyQueueEnumerator : IEnumerator
