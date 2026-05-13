@@ -2,7 +2,7 @@
 
 namespace Collections;
 
-abstract class MyCollection<T> : ICollection<T>//, IEnumerable<T>
+abstract class MyCollection<T> : ICollection<T>
 {
     public int Count {get; protected set;}
     public bool IsReadOnly { get; }
